@@ -1,4 +1,4 @@
-FROM golang:1.24 AS builder
+FROM golang:1.22 AS builder
 
 ARG KUSTOMIZE_VERSION=v5.0.3
 ARG HELM_VERSION=v3.13.2
