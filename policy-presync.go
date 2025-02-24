@@ -31,19 +31,19 @@ type ReleaseResponse struct {
 }
 
 type ServiceNowResponse struct {
-	state 							string `json:"state"`
-	startTime 						string `json:"startTime"`
-	endTime							string `json:"endTime"`
-	mainConfigurationItem			MainConfigurationItem `json:"mainConfigurationItem"`
+	State 							string `json:"state"`
+	StartTime 						string `json:"startTime"`
+	EndTime							string `json:"endTime"`
+	MainConfigurationItem			MainConfigurationItem `json:"mainConfigurationItem"`
 }
 
 type MainConfigurationItem struct {
-	name 							string `json:"name"`
-	number 							ConfigurationItemNumber `json:"number"`
+	Name 							string `json:"name"`
+	Number 							ConfigurationItemNumber `json:"number"`
 }
 
 type ConfigurationItemNumber struct {
-	identifier						string `json:"identifier"`
+	Identifier						string `json:"identifier"`
 }
 
 type Regulation struct {
@@ -211,18 +211,18 @@ func startServiceNowSteward(ctx context.Context, url string, wgErrorChan chan<- 
 }
 
 func checkServiceNowStatus(serviceNowResponse ServiceNowResponse) bool {
-	if serviceNowResponse.state == "Implement" {
+	if serviceNowResponse.State == "Implement" {
 		return true
 	}
-	if serviceNowResponse.state != "Scheduled" {
+	if serviceNowResponse.State != "Scheduled" {
 		return false
 	}
-	endTime, err := time.Parse(time.RFC3339, serviceNowResponse.endTime)
+	endTime, err := time.Parse(time.RFC3339, serviceNowResponse.EndTime)
 	if err != nil {
 		log.Printf("error parsing endTime")
 		return false
 	}
-	startTime, err := time.Parse(time.RFC3339, serviceNowResponse.startTime)
+	startTime, err := time.Parse(time.RFC3339, serviceNowResponse.StartTime)
 	if err != nil {
 		log.Printf("error parsing startTime")
 		return false
@@ -241,7 +241,7 @@ func checkServiceNowStatus(serviceNowResponse ServiceNowResponse) bool {
 }
 
 func parseIdentifierField(serviceNowResponse ServiceNowResponse) (string, string) {
-	identifier := serviceNowResponse.mainConfigurationItem.number.identifier
+	identifier := serviceNowResponse.MainConfigurationItem.Number.Identifier
 	ix := strings.LastIndex(identifier, ":")
 	if ix != -1 {
 		return identifier[:ix], identifier[ix+1:]
