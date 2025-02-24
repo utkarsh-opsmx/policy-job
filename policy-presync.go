@@ -211,7 +211,10 @@ func startServiceNowSteward(ctx context.Context, url string, wgErrorChan chan<- 
 }
 
 func checkServiceNowStatus(serviceNowResponse ServiceNowResponse) bool {
-	if !(serviceNowResponse.state == "Implement" || serviceNowResponse.state == "Scheduled") {
+	if serviceNowResponse.state == "Implement" {
+		return true
+	}
+	if serviceNowResponse.state != "Scheduled" {
 		return false
 	}
 	endTime, err := time.Parse(time.RFC3339, serviceNowResponse.endTime)
@@ -227,8 +230,23 @@ func checkServiceNowStatus(serviceNowResponse ServiceNowResponse) bool {
 	if (time.Now().Unix() > endTime.Unix()) || (time.Now().Unix() < startTime.Unix()) {
 		return false
 	}
-	// TODO: Criteria to validate sealId and deploymentId in response
+	sealIdFromResponse, deploymentIdFromResponse := parseIdentifierField(serviceNowResponse)
+	if sealIdFromResponse != sealId {
+		return false
+	}
+	if deploymentIdFromResponse != deploymentId {
+		return false
+	}
 	return true
+}
+
+func parseIdentifierField(serviceNowResponse ServiceNowResponse) (string, string) {
+	identifier := serviceNowResponse.mainConfigurationItem.number.identifier
+	ix := strings.LastIndex(identifier, ":")
+	if ix != -1 {
+		return identifier[:ix], identifier[ix+1:]
+	}
+	return "", ""
 }
 
 func releaseReadyValidation(url string, resultChan chan<- Result, payload ReleasePayload) {

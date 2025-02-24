@@ -11,7 +11,7 @@ import (
 )
 
 var syncType string
-var releaseCheckUrl, servicenowCheckUrl, gitCommitMessage, token, repoUrl, gitBranch, gitLastCommitId, targetEnvironment string
+var releaseCheckUrl, servicenowCheckUrl, gitCommitMessage, token, repoUrl, gitBranch, gitLastCommitId, targetEnvironment, sealId, deploymentId string
 var submitDeploymentUrl string
 
 type JobPayload struct {
@@ -80,6 +80,8 @@ func init() {
 	rootCmd.Flags().StringVarP(&repoUrl, "repo-url", "", "", "repo url")
 	rootCmd.Flags().StringVarP(&gitLastCommitId, "git-last-commitId", "", "", "git last commit id")
 	rootCmd.Flags().StringVarP(&targetEnvironment, "target-environment", "", "", "target environment")
+	rootCmd.Flags().StringVarP(&sealId, "sealId", "", "", "seal id from manifests")
+	rootCmd.Flags().StringVarP(&deploymentId, "deploymentId", "", "", "deployment id from manifests")
 }
 
 func main() {
