@@ -66,7 +66,6 @@ func RunPresync(ctx context.Context) error {
 	if err := validateInput(); err != nil {
 		return err
 	}
-
 	var wg sync.WaitGroup
 	wgErrorChan := make(chan bool)
 	wgDoneChan := make(chan bool)
@@ -75,7 +74,8 @@ func RunPresync(ctx context.Context) error {
 		wg.Add(1)
 		go func(payload string) {
 			defer wg.Done()
-			jobPayload := JobPayload{}
+
+			var jobPayload JobPayload
 			if err := json.Unmarshal([]byte(payload), &jobPayload); err != nil {
 				log.Printf("error while parsing job payload %v", err)
 				wgErrorChan <- true
@@ -158,6 +158,7 @@ func startValidationSteward(ctx context.Context, url string, payload JobPayload,
 			return
 		case result := <-resultChan:
 			if result.err != nil {
+				log.Printf("error in sending request for release validation: %v", result.err)
 				wgErrorChan <- true
 			} else {
 				var releaseResponse ReleaseResponse
@@ -192,6 +193,7 @@ func startServiceNowSteward(ctx context.Context, url string, wgErrorChan chan<- 
 			return
 		case result := <-resultChan:
 			if result.err != nil {
+				log.Printf("error in sending request for service now validation: %v", result.err)
 				wgErrorChan <- true
 			} else {
 				var serviceNowResponse ServiceNowResponse
@@ -228,13 +230,16 @@ func checkServiceNowStatus(serviceNowResponse ServiceNowResponse) bool {
 		return false
 	}
 	if (time.Now().Unix() > endTime.Unix()) || (time.Now().Unix() < startTime.Unix()) {
+		log.Printf("current time is not within time window")
 		return false
 	}
 	sealIdFromResponse, deploymentIdFromResponse := parseIdentifierField(serviceNowResponse)
 	if sealIdFromResponse != sealId {
+		log.Printf("seal id does not match")
 		return false
 	}
 	if deploymentIdFromResponse != deploymentId {
+		log.Printf("deployment id does not match")
 		return false
 	}
 	return true
@@ -304,7 +309,7 @@ func getForReleaseCheckHost(c *http.Client, url, token string, jetId string, git
 	request.Header.Add(opsmxToken, token)
 
 	q := request.URL.Query()
-	q.Add("gitBranch", gitBranch)
+	q.Add("branch", gitBranch)
 	q.Add("sealId", sealId)
 	q.Add("jetId", jetId)
 	q.Add("artifactCreateDate", strconv.Itoa(artifactCreateDate))

@@ -11,8 +11,10 @@ import (
 )
 
 var syncType string
-var releaseCheckUrl, servicenowCheckUrl, gitCommitMessage, token, repoUrl, gitBranch, gitLastCommitId, targetEnvironment, sealId, deploymentId string
+var releaseCheckUrl, servicenowCheckUrl, gitCommitMessage, token, repoUrl, gitBranch, gitLastCommitId, targetEnvironment string
 var submitDeploymentUrl string
+var sealId = "09959"
+var deploymentId = "114041"
 
 type JobPayload struct {
 	OrganizationName 			string `json:"organizationName,omitempty"`
@@ -62,6 +64,7 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
+		log.Printf("error: %v", err)
 		log.Printf("FAILURE: %s", syncType)
 		os.Exit(1)
 	}
@@ -80,8 +83,8 @@ func init() {
 	rootCmd.Flags().StringVarP(&repoUrl, "repo-url", "", "", "repo url")
 	rootCmd.Flags().StringVarP(&gitLastCommitId, "git-last-commitId", "", "", "git last commit id")
 	rootCmd.Flags().StringVarP(&targetEnvironment, "target-environment", "", "", "target environment")
-	rootCmd.Flags().StringVarP(&sealId, "sealId", "", "", "seal id from manifests")
-	rootCmd.Flags().StringVarP(&deploymentId, "deploymentId", "", "", "deployment id from manifests")
+	// rootCmd.Flags().StringVarP(&sealId, "sealId", "", "", "seal id from manifests")
+	// rootCmd.Flags().StringVarP(&deploymentId, "deploymentId", "", "", "deployment id from manifests")
 }
 
 func main() {
