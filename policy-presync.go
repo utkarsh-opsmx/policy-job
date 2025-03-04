@@ -70,6 +70,11 @@ func RunPresync(ctx context.Context) error {
 	wgErrorChan := make(chan bool)
 	wgDoneChan := make(chan bool)
 
+
+	if err := getDeploymentIdAndSealId(); err != nil {
+		return fmt.Errorf("error while fetching deploymentId and sealId from application manifest: %v", err)
+	}
+
 	for _, payload := range payloads {
 		wg.Add(1)
 		go func(payload string) {

@@ -12,9 +12,8 @@ import (
 
 var syncType string
 var releaseCheckUrl, servicenowCheckUrl, gitCommitMessage, token, repoUrl, gitBranch, gitLastCommitId, targetEnvironment string
-var submitDeploymentUrl string
-var sealId = "09959"
-var deploymentId = "114041"
+var submitDeploymentUrl, argocdAppName, argocdNamespace string
+var sealId, deploymentId string
 
 type JobPayload struct {
 	OrganizationName 			string `json:"organizationName,omitempty"`
@@ -83,6 +82,8 @@ func init() {
 	rootCmd.Flags().StringVarP(&repoUrl, "repo-url", "", "", "repo url")
 	rootCmd.Flags().StringVarP(&gitLastCommitId, "git-last-commitId", "", "", "git last commit id")
 	rootCmd.Flags().StringVarP(&targetEnvironment, "target-environment", "", "", "target environment")
+	rootCmd.Flags().StringVarP(&argocdAppName, "argocd-app-name","","", "argocd application on which the plugin is applied")
+	rootCmd.Flags().StringVarP(&argocdNamespace, "argocd-namespace","","", "namespace where argocd is installed")
 	// rootCmd.Flags().StringVarP(&sealId, "sealId", "", "", "seal id from manifests")
 	// rootCmd.Flags().StringVarP(&deploymentId, "deploymentId", "", "", "deployment id from manifests")
 }
