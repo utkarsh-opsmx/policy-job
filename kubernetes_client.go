@@ -18,19 +18,21 @@ func getDeploymentIdAndSealId() error {
 	arg6 := "-n"
 	arg7 := argocdNamespace
 	cmd := exec.Command(app, arg0,arg1,arg2,arg3,arg4, arg6, arg7)
-	var out bytes.Buffer
+// 	var out bytes.Buffer
 var stderr bytes.Buffer
-cmd.Stdout = &out
+// cmd.Stdout = &out
 cmd.Stderr = &stderr
-	err := cmd.Run()
-	// labelsJson, err := cmd.Output()
-	labelsJson := out.String()
+	// err := cmd.Run()
+	// // labelsJson, err := cmd.Output()
+	// labelsJson := out.String()
+	labelsJson, err := cmd.Output()
+	labelsJson = labelsJson[1:len(labelsJson)-1]
 	if err != nil {
 		return fmt.Errorf("command %s failed with output: %s and error: %v", app, &stderr, err)
 	}
 	var labels map[string]string
-	if err := json.Unmarshal([]byte(labelsJson), &labels); err != nil {
-		return err
+	if err := json.Unmarshal(labelsJson, &labels); err != nil {
+		return fmt.Errorf("error parsing application labels json: %s failed with error: %v", labelsJson, err)
 	}
 	sealId = labels["sealId"]
 	deploymentId = labels["deploymentId"]
