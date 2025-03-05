@@ -13,21 +13,21 @@ import (
 )
 
 type DeploymentPayload struct {
-	eventStatus							string `json:"jetId"`
-	deployTool 							string `json:"deployTool"`
-	sealId								string `json:"sealId"`
-	jetId 								string `json:"jetId"`
-	repoName							string `json:"repoName"`
-	projectName 						string `json:"projectName"`
-	branch								string `json:"branch"`
-	eventSubType						string `json:"eventSubType"`
-	commitId 							string `json:"commitId"`
-	sourceUri							string `json:"sourceUri"`
-	artifactId 							string `json:"artifactId"`
-	artifactLocation					string `json:"artifactLocation"`
-	targetEnvironment 					string `json:"targetEnvironment"`
-	initiator							string `json:"initiator"`
-	extPayload 							string `json:"extPayload"`
+	EventStatus							string `json:"eventStatus"`
+	DeployTool 							string `json:"deployTool"`
+	SealId								string `json:"sealId"`
+	JetId 								string `json:"jetId"`
+	RepoName							string `json:"repoName"`
+	ProjectName 						string `json:"projectName"`
+	Branch								string `json:"branch"`
+	EventSubType						string `json:"eventSubType"`
+	CommitId 							string `json:"commitId"`
+	SourceUri							string `json:"sourceUri"`
+	ArtifactId 							string `json:"artifactId"`
+	ArtifactLocation					string `json:"artifactLocation"`
+	TargetEnvironment 					string `json:"targetEnvironment"`
+	Initiator							string `json:"initiator"`
+	ExtPayload 							string `json:"extPayload"`
 }
 
 func RunPostsync(ctx context.Context) error {
@@ -84,19 +84,19 @@ func MakeDeploymentPayload(payload JobPayload) (string, error) {
 		return "", err
 	}
 	deploymentPayload, err := json.Marshal(DeploymentPayload{
-		eventStatus: "SUCCESS",
-		deployTool: "ArgoCD",
-		sealId: payload.SealId,
-		jetId: payload.JetId,
-		repoName: repoName,
-		projectName: payload.ProjectName,
-		branch: gitBranch,
-		commitId: gitLastCommitId,
-		sourceUri: "???",
-		artifactId: payload.ArtifactId,
-		artifactLocation: payload.artifactLocation,
-		targetEnvironment: targetEnvironment,
-		initiator: "???",
+		EventStatus: "SUCCESS",
+		DeployTool: "ArgoCD",
+		SealId: payload.SealId,
+		JetId: payload.JetId,
+		RepoName: repoName,
+		ProjectName: payload.ProjectName,
+		Branch: gitBranch,
+		CommitId: gitLastCommitId,
+		SourceUri: payload.ArtifactLocation,
+		ArtifactId: payload.ArtifactId,
+		ArtifactLocation: payload.ArtifactLocation,
+		TargetEnvironment: targetEnvironment,
+		Initiator: "???",
 	})
 	return string(deploymentPayload), err
 }

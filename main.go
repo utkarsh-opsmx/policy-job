@@ -25,7 +25,7 @@ type JobPayload struct {
 	SealId						string `json:"sealId"`
 	DeploymentId				string `json:"deploymentId"`
 	ProjectName					string `json:"projectName"`
-	artifactLocation			string `json:"artifactLocation"`
+	ArtifactLocation			string `json:"artifactLocation"`
 }
 
 var payloads = make([]string, 0)
